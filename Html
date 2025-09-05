@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Teerth AI - Smart AI Assistant</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .auth-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .demo-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .demo-box h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .demo-box p {
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .quick-login-btn {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .quick-login-btn:hover {
+            background: #1976d2;
+            transform: translateY(-1px);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .demo-accounts {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .chat-container {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            height: 600px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .subject-tabs {
+            display: flex;
+            background: #f8f9fa;
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        .subject-tab {
+            min-width: 120px;
+            padding: 10px 15px;
+            margin: 0 5px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .subject-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: messageSlide 0.5s ease-out;
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .message.ai .message-bubble {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 15px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .send-btn {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+            font-style: italic;
+            margin: 10px 0;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: typingPulse 1.5s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes typingPulse {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            color: white;
+        }
+
+        .features h3 {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .auth-container {
+                padding: 20px;
+            }
+            
+            .chat-container {
+                height: 500px;
+            }
+
+            .subject-tabs {
+                flex-wrap: wrap;
+            }
+
+            .subject-tab {
+                min-width: 100px;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Ask Teerth AI</h1>
+            <p>Your Smart AI Assistant for All Subjects</p>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="authSection" class="auth-container">
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchTab('login')">Login</div>
+                <div class="auth-tab" onclick="switchTab('signup')">Sign Up</div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="demo-box">
+                    <h4>🎯 Quick Demo Login</h4>
+                    <p><strong>Email:</strong> demo@askteerthai.com</p>
+                    <p><strong>Password:</strong> demo123</p>
+                    <button type="button" class="quick-login-btn" onclick="quickLogin()">Quick Login</button>
+                </div>
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="auth-btn">Login to Ask Teerth AI</button>
+                <div class="demo-accounts">
+                    <strong>Other Demo Accounts:</strong><br>
+                    • student@example.com / student123<br>
+                    • test@test.com / test123
+                </div>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label for="signupName">Full Name:</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email:</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password:</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password (min 6 characters)" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="auth-btn">Create Account</button>
+            </form>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features">
+            <h3>🌟 Why Choose Ask Teerth AI?</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h4>📚 All Subjects Covered</h4>
+                    <p>Science, Math, Geography, History, and more!</p>
+                </div>
+                <div class="feature-item">
+                    <h4>⚡ Lightning Fast</h4>
+                    <p>Get instant answers to your questions</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🎯 Accurate Responses</h4>
+                    <p>AI-powered accurate and reliable answers</p>
+                </div>
+                <div class="feature-item">
+                    <h4>🔒 Secure & Private</h4>
+                    <p>Your data is safe and protected</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Interface -->
+        <div id="chatSection" class="chat-container">
+            <div class="chat-header">
+                <div class="chat-title">Ask Teerth AI Assistant</div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="subject-tabs">
+                <div class="subject-tab active" onclick="selectSubject('general')">General</div>
+                <div class="subject-tab" onclick="selectSubject('science')">Science</div>
+                <div class="subject-tab" onclick="selectSubject('mathematics')">Mathematics</div>
+                <div class="subject-tab" onclick="selectSubject('history')">History</div>
+                <div class="subject-tab" onclick="selectSubject('geography')">Geography</div>
+                <div class="subject-tab" onclick="selectSubject('english')">English</div>
+                <div class="subject-tab" onclick="selectSubject('physics')">Physics</div>
+                <div class="subject-tab" onclick="selectSubject('chemistry')">Chemistry</div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="message-bubble">
+                        👋 Hello! I'm Teerth AI, your smart assistant for all subjects. Ask me anything about Science, Mathematics, Geography, History, or any other topic you need help with!
+                    </div>
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator">
+                <span>Teerth AI is thinking</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Ask me anything about any subject..." onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentSubject = 'general';
+        
+        // Pre-loaded demo accounts for immediate testing
+        let users = {
+            'demo@askteerthai.com': {
+                name: 'Demo User',
+                email: 'demo@askteerthai.com',
+                password: 'demo123'
+            },
+            'student@example.com': {
+                name: 'Student',
+                email: 'student@example.com',
+                password: 'student123'
+            },
+            'test@test.com': {
+                name: 'Test User',
+                email: 'test@test.com',
+                password: 'test123'
+            }
+        };
+
+        // Knowledge base for different subjects
+        const knowledgeBase = {
+            science: {
+                keywords: ['atom', 'molecule', 'photosynthesis', 'gravity', 'evolution', 'DNA', 'ecosystem', 'cell', 'organism', 'bacteria', 'virus', 'protein', 'carbon', 'oxygen', 'water'],
+                responses: [
+                    "Science is the systematic study of the natural world through observation and experimentation.",
+                    "In biology, photosynthesis is the process by which plants convert sunlight into energy using chlorophyll in their leaves.",
+                    "Physics studies matter, energy, and their interactions. Newton's laws govern motion and forces in our universe.",
+                    "Chemistry focuses on atoms, molecules, and chemical reactions that transform substances into new compounds.",
+                    "The scientific method involves forming a hypothesis, conducting experiments, making observations, and drawing conclusions.",
+                    "DNA contains the genetic instructions for all living organisms and is made up of four bases: A, T, G, and C.",
+                    "Ecosystems are complex networks of interactions between living organisms and their physical environment."
+                ]
+            },
+            mathematics: {
+                keywords: ['equation', 'algebra', 'geometry', 'calculus', 'trigonometry', 'statistics', 'probability', 'fraction', 'decimal', 'percentage', 'square', 'root', 'formula'],
+                responses: [
+                    "Mathematics is the language of patterns, numbers, and logical reasoning that helps us understand the world.",
+                    "Algebra uses symbols and letters to represent numbers in equations and formulas, making complex calculations easier.",
+                    "Geometry studies shapes, sizes, angles, and spatial relationships in two and three dimensions.",
+                    "Calculus deals with rates of change (derivatives) and accumulation of quantities (integrals).",
+                    "Statistics helps us analyze data, identify trends, and make informed decisions based on probability.",
+                    "The Pythagorean theorem (a² + b² = c²) is fundamental in geometry and has many practical applications.",
+                    "Fractions represent parts of a whole, while decimals and percentages are different ways to express the same values."
+                ]
+            },
+            history: {
+                keywords: ['ancient', 'civilization', 'war', 'revolution', 'empire', 'culture', 'timeline', 'medieval', 'renaissance', 'industrial', 'world wa

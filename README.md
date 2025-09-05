@@ -1,1 +1,0 @@
-# Ask-TEERTH-AI-Assistant-
